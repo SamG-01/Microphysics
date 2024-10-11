@@ -51,8 +51,8 @@ struct plasma_state_t {
     amrex::Real z2bar;
     amrex::Real n_e;
     amrex::Real gamma_e_fac;
-    //amrex::Real C_ps;
-    //number_t y0;
+    amrex::Real C_ps;
+    number_t y0;
 };
 
 template <typename number_t>
@@ -76,8 +76,8 @@ std::ostream& operator<< (std::ostream& o, plasma_state_t<number_t> const& pstat
     o << "z2bar    = " << pstate.z2bar << std::endl;
     o << "n_e      = " << pstate.n_e << std::endl;
     o << "gamma_e_fac = " << pstate.gamma_e_fac << std::endl;
-    //o << "C_ps = " << pstate.C_ps << std::endl;
-    //o << "y0 = " << pstate.y0 << std::endl;
+    o << "C_ps = " << pstate.C_ps << std::endl;
+    o << "y0 = " << pstate.y0 << std::endl;
 
     return o;
 }
