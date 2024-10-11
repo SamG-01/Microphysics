@@ -51,6 +51,8 @@ struct plasma_state_t {
     amrex::Real z2bar;
     amrex::Real n_e;
     amrex::Real gamma_e_fac;
+    //amrex::Real C_ps;
+    //number_t y0;
 };
 
 template <typename number_t>
@@ -74,6 +76,8 @@ std::ostream& operator<< (std::ostream& o, plasma_state_t<number_t> const& pstat
     o << "z2bar    = " << pstate.z2bar << std::endl;
     o << "n_e      = " << pstate.n_e << std::endl;
     o << "gamma_e_fac = " << pstate.gamma_e_fac << std::endl;
+    //o << "C_ps = " << pstate.C_ps << std::endl;
+    //o << "y0 = " << pstate.y0 << std::endl;
 
     return o;
 }
@@ -150,6 +154,18 @@ fill_plasma_state(plasma_state_t<number_t>& state, const number_t& temp,
     constexpr amrex::Real gamma_e_constants =
         C::q_e*C::q_e/C::k_B * gcem::pow(4.0_rt/3.0_rt*M_PI, 1.0_rt/3.0_rt);
     state.gamma_e_fac = gamma_e_constants * std::cbrt(state.n_e);
+
+    // precomputed values for finding the border
+    // where Chugunov 2009 >= 1.01
+    constexpr amrex::Real a2 = 10.41502026_rt;
+    constexpr amrex::Real k2 = 0.02076143_rt;
+
+    constexpr amrex::Real C0 = -10.132085464080653_rt;
+    constexpr amrex::Real C1 = 1.03_rt * admath::log10(z2bar);
+    constexpr amrex::Real C2 = a2*(admath::pow(abar, k2) + admath::pow(abar, -k2));
+
+    state.C_ps = C0 + C1 + C2;
+    state.y0 = admath::log10(tempi) - admath::log10(dens);
 }
 
 #if SCREEN_METHOD == SCREEN_METHOD_screen5
@@ -465,6 +481,10 @@ number_t chugunov2009 (const plasma_state_t<number_t>& state,
     // input:
     // state   = plasma state (T, rho, abar, zbar, etc.)
     // scn_fac = screening factors for A and Z
+
+    if (state.C_ps + scn_fac.C_sf < state.y0) {
+        return 1.0_rt;
+    }
 
     amrex::Real z1z2 = scn_fac.z1 * scn_fac.z2;
     amrex::Real zcomp = scn_fac.z1 + scn_fac.z2;
