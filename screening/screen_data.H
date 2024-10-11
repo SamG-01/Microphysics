@@ -125,7 +125,7 @@ namespace scrn {
         // where Chugunov 2009 >= 1.01
         constexpr amrex::Real a3 = 7.73078747_rt;
         constexpr amrex::Real k3 = 0.02600378_rt;
-        scn_fac.C_sf = a3 * gcem::pow(gcem::pow(z1, k3) + gcem::pow(z2, k3), 2);
+        scn_fac.C_sf = a3 * amrex::Math::powi<2>(gcem::pow(z1, k3) + gcem::pow(z2, k3));
 
 #elif SCREEN_METHOD == SCREEN_METHOD_chabrier1998
         scn_fac.zs53 = gcem::pow(z1 + z2, 5.0_rt / 3.0_rt);
