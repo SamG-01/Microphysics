@@ -467,6 +467,8 @@ number_t chugunov2009 (const plasma_state_t<number_t>& state,
     // scn_fac = screening factors for A and Z
 
     if (screening_rp::enable_chugunov2009_analytic_skip) {
+        constexpr amrex::Real C0 = -10.132085464080653_rt;
+
         constexpr amrex::Real m1 = 1.03_rt;
         amrex::Real C1 = m1 * admath::log10(state.z2bar);
 
