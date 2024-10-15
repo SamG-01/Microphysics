@@ -1,3 +1,7 @@
 @namespace: screening
 
 enable_chabrier1998_quantum_corr        bool      0
+
+@namespace: screening
+
+enable_chugunov2009_analytic_skip        bool      0

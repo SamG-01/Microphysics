@@ -55,6 +55,9 @@ namespace scrn {
         amrex::Real z2_53 = 0.0;
         amrex::Real aznut = 0.0;
         amrex::Real ztilde = 0.0;
+        if (screening_rp::enable_chugunov2009_analytic_skip) {
+                amrex::Real C_sf = 0.0;
+        }
 #elif SCREEN_METHOD == SCREEN_METHOD_chabrier1998
         amrex::Real zs53 = 0.0;
         amrex::Real z1_53 = 0.0;
@@ -119,6 +122,11 @@ namespace scrn {
                                   1.0_rt / 3.0_rt);
         scn_fac.ztilde = 0.5_rt * (gcem::pow(z1, 1.0_rt / 3.0_rt) +
                                    gcem::pow(z2, 1.0_rt / 3.0_rt));
+        if (screening_rp::enable_chugunov2009_analytic_skip) {
+            constexpr amrex::Real a3 = 7.73078747_rt;
+            constexpr amrex::Real k3 = 0.02600378_rt;
+            scn_fac.C_sf = a3 * amrex::Math::powi<2>(gcem::pow(z1, k3) + gcem::pow(z2, k3));
+        }
 
 #elif SCREEN_METHOD == SCREEN_METHOD_chabrier1998
         scn_fac.zs53 = gcem::pow(z1 + z2, 5.0_rt / 3.0_rt);
