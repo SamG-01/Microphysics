@@ -51,10 +51,6 @@ struct plasma_state_t {
     amrex::Real z2bar;
     amrex::Real n_e;
     amrex::Real gamma_e_fac;
-    if (screening_rp::enable_chabrier1998_quantum_corr) {
-        amrex::Real C_ps;
-        number_t y0;
-    }
 };
 
 template <typename number_t>
@@ -154,20 +150,6 @@ fill_plasma_state(plasma_state_t<number_t>& state, const number_t& temp,
     constexpr amrex::Real gamma_e_constants =
         C::q_e*C::q_e/C::k_B * gcem::pow(4.0_rt/3.0_rt*M_PI, 1.0_rt/3.0_rt);
     state.gamma_e_fac = gamma_e_constants * std::cbrt(state.n_e);
-
-    if (screening_rp::enable_chugunov2009_analytic_skip) {
-        constexpr amrex::Real C0 = -10.132085464080653_rt;
-
-        constexpr amrex::Real m1 = 1.03_rt;
-        amrex::Real C1 = m1 * admath::log10(z2bar);
-
-        constexpr amrex::Real a2 = 10.41502026_rt;
-        constexpr amrex::Real k2 = 0.02076143_rt;
-        amrex::Real C2 = a2 * (gcem::pow(abar, -k2) - gcem::pow(abar, k2));
-
-        state.C_ps = C0 + C1 + C2;
-        state.y0 = 3.0_rt * admath::log10(temp) - admath::log10(dens);
-    }
 }
 
 #if SCREEN_METHOD == SCREEN_METHOD_screen5
@@ -485,7 +467,22 @@ number_t chugunov2009 (const plasma_state_t<number_t>& state,
     // scn_fac = screening factors for A and Z
 
     if (screening_rp::enable_chugunov2009_analytic_skip) {
-        if (state.C_ps + scn_fac.C_sf < state.y0) {
+        constexpr amrex::Real m1 = 1.03_rt;
+        amrex::Real C1 = m1 * admath::log10(state.z2bar);
+
+        constexpr amrex::Real a2 = 10.41502026_rt;
+        constexpr amrex::Real k2 = 0.02076143_rt;
+        amrex::Real C2 = a2 * (gcem::pow(state.abar, -k2) - gcem::pow(state.abar, k2));
+
+        constexpr amrex::Real a3 = 7.73078747_rt;
+        constexpr amrex::Real k3 = 0.02600378_rt;
+        amrex::Real C3 = a3*amrex::Math::powi<2>(gcem::pow(scn_fac.z1, k3)
+                                                + gcem::pow(scn_fac.z2, k3));
+
+        amrex::Real C = C0 + C1 + C2 + C3;
+        number_t y0 = 3.0_rt * admath::log10(state.temp) - admath::log10(state.dens);
+
+        if (C < y0) {
             return 1.0_rt;
         }
     }
