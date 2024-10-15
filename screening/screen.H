@@ -646,7 +646,8 @@ number_t actual_screen(const plasma_state_t<number_t>& state,
 #elif SCREEN_METHOD == SCREEN_METHOD_chugunov2007
     scor = chugunov2007(state, scn_fac);
 #elif SCREEN_METHOD == SCREEN_METHOD_chugunov2009
-    if (state.C_ps + scn_fac.C_sf < state.y0) {
+    if (screening_rp::enable_chugunov2009_analytic_skip
+        && state.C_ps + scn_fac.C_sf < state.y0) {
         scor = 1.0_rt;
     }
     else {
