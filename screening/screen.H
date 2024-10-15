@@ -48,6 +48,7 @@ struct plasma_state_t {
     number_t aa;
     number_t dens;
     number_t temp;
+    amrex::Real abar;
     amrex::Real zbar;
     amrex::Real z2bar;
     amrex::Real n_e;
@@ -141,6 +142,7 @@ fill_plasma_state(plasma_state_t<number_t>& state, const number_t& temp,
 
     state.dens = dens;
     state.temp = temp;
+    state.abar = abar;
     state.zbar = zbar;
     state.z2bar = z2bar;
 
