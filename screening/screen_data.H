@@ -122,7 +122,7 @@ namespace scrn {
                                    gcem::pow(z2, 1.0_rt / 3.0_rt));
 
         // precomputed values for finding the border
-        // where Chugunov 2009 >= 1.01
+        // of the rho-T region where Chugunov 2009 >= 1.01
         constexpr amrex::Real a3 = 7.73078747_rt;
         constexpr amrex::Real k3 = 0.02600378_rt;
         scn_fac.C_sf = a3 * amrex::Math::powi<2>(gcem::pow(z1, k3) + gcem::pow(z2, k3));

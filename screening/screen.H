@@ -156,13 +156,13 @@ fill_plasma_state(plasma_state_t<number_t>& state, const number_t& temp,
     state.gamma_e_fac = gamma_e_constants * std::cbrt(state.n_e);
 
     // precomputed values for finding the border
-    // where Chugunov 2009 >= 1.01
+    // of the rho-T region where Chugunov 2009 >= 1.01
     constexpr amrex::Real a2 = 10.41502026_rt;
     constexpr amrex::Real k2 = 0.02076143_rt;
 
     amrex::Real C0 = -10.132085464080653_rt;
     amrex::Real C1 = 1.03_rt * admath::log10(z2bar);
-    amrex::Real C2 = a2*(admath::pow(abar, k2) + admath::pow(abar, -k2));
+    amrex::Real C2 = a2*(admath::pow(abar, -k2) - admath::pow(abar, k2));
 
     state.C_ps = C0 + C1 + C2;
     state.y0 = 3.0_rt * admath::log10(temp) - admath::log10(dens);
