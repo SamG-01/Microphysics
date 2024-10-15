@@ -71,7 +71,9 @@ std::ostream& operator<< (std::ostream& o, plasma_state_t<number_t> const& pstat
     if constexpr (autodiff::detail::isDual<number_t>) {
         o << "daadt    = " << autodiff::derivative(pstate.aa) << std::endl;
     }
+    o << "dens     = " << pstate.dens << std::endl;
     o << "temp     = " << pstate.temp << std::endl;
+    o << "abar     = " << pstate.abar << std::endl;
     o << "zbar     = " << pstate.zbar << std::endl;
     o << "z2bar    = " << pstate.z2bar << std::endl;
     o << "n_e      = " << pstate.n_e << std::endl;
