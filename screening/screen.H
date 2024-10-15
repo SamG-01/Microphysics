@@ -160,7 +160,7 @@ fill_plasma_state(plasma_state_t<number_t>& state, const number_t& temp,
     constexpr amrex::Real a2 = 10.41502026_rt;
     constexpr amrex::Real k2 = 0.02076143_rt;
 
-    amrex::Real C0 = -10.132085464080653_rt;
+    constexpr amrex::Real C0 = -10.132085464080653_rt;
     amrex::Real C1 = 1.03_rt * admath::log10(z2bar);
     amrex::Real C2 = a2*(admath::pow(abar, -k2) - admath::pow(abar, k2));
 
