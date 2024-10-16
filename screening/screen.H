@@ -481,6 +481,10 @@ number_t chugunov2009 (const plasma_state_t<number_t>& state,
     // input:
     // state   = plasma state (T, rho, abar, zbar, etc.)
     // scn_fac = screening factors for A and Z
+    if (screening_rp::enable_chugunov2009_analytic_skip
+        && state.C_ps + scn_fac.C_sf < state.y0) {
+        return 1.0_rt;
+    }
 
     amrex::Real z1z2 = scn_fac.z1 * scn_fac.z2;
     amrex::Real zcomp = scn_fac.z1 + scn_fac.z2;
@@ -646,13 +650,7 @@ number_t actual_screen(const plasma_state_t<number_t>& state,
 #elif SCREEN_METHOD == SCREEN_METHOD_chugunov2007
     scor = chugunov2007(state, scn_fac);
 #elif SCREEN_METHOD == SCREEN_METHOD_chugunov2009
-    if (screening_rp::enable_chugunov2009_analytic_skip
-        && state.C_ps + scn_fac.C_sf < state.y0) {
-        scor = 1.0_rt;
-    }
-    else {
-        scor = chugunov2009(state, scn_fac);
-    }
+    scor = chugunov2009(state, scn_fac);
 #elif SCREEN_METHOD == SCREEN_METHOD_chabrier1998
     scor = chabrier1998(state, scn_fac);
 #endif
