@@ -51,8 +51,7 @@ struct plasma_state_t {
     amrex::Real z2bar;
     amrex::Real n_e;
     amrex::Real gamma_e_fac;
-    amrex::Real C_ps;
-    number_t y0;
+    amrex::Real C_target;
 };
 
 template <typename number_t>
@@ -76,8 +75,7 @@ std::ostream& operator<< (std::ostream& o, plasma_state_t<number_t> const& pstat
     o << "z2bar    = " << pstate.z2bar << std::endl;
     o << "n_e      = " << pstate.n_e << std::endl;
     o << "gamma_e_fac = " << pstate.gamma_e_fac << std::endl;
-    o << "C_ps = " << pstate.C_ps << std::endl;
-    o << "y0 = " << pstate.y0 << std::endl;
+    o << "C_target = " << pstate.C_target << std::endl;
 
     return o;
 }
@@ -164,8 +162,7 @@ fill_plasma_state(plasma_state_t<number_t>& state, const number_t& temp,
     amrex::Real C1 = 1.03_rt * admath::log10(z2bar);
     amrex::Real C2 = a2*(admath::pow(abar, -k2) - admath::pow(abar, k2));
 
-    state.C_ps = C0 + C1 + C2;
-    state.y0 = 3.0_rt * admath::log10(temp) - admath::log10(dens);
+    state.C_target = 3.0_rt * admath::log10(temp) - admath::log10(dens) - (C0 + C1 + C2);
 }
 
 #if SCREEN_METHOD == SCREEN_METHOD_screen5
@@ -482,7 +479,7 @@ number_t chugunov2009 (const plasma_state_t<number_t>& state,
     // state   = plasma state (T, rho, abar, zbar, etc.)
     // scn_fac = screening factors for A and Z
     if (screening_rp::enable_chugunov2009_analytic_skip
-        && state.C_ps + scn_fac.C_sf < state.y0) {
+        && scn_fac.C_sf < state.C_target) {
         return 1.0_rt;
     }
 
