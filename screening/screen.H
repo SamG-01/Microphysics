@@ -478,8 +478,7 @@ number_t chugunov2009 (const plasma_state_t<number_t>& state,
     // input:
     // state   = plasma state (T, rho, abar, zbar, etc.)
     // scn_fac = screening factors for A and Z
-    if (screening_rp::enable_chugunov2009_analytic_skip
-        && scn_fac.C_sf < state.C_target) {
+    if (scn_fac.C_sf < state.C_target) {
         return 1.0_rt;
     }
 
